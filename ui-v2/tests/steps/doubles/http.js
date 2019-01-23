@@ -1,10 +1,12 @@
-export default function(scenario, api) {
-  // TODO: Abstract this away from HTTP
+export default function(scenario, respondWith) {
+  // respondWith should set the url to return a certain response shape
   scenario
     .given(['the url "$url" responds with a $status status'], function(url, status) {
-      return api.server.respondWithStatus(url.split('?')[0], parseInt(status));
+      respondWith(url, {
+        status: parseInt(status),
+      });
     })
     .given(['the url "$url" responds with from yaml\n$yaml'], function(url, data) {
-      api.server.respondWith(url.split('?')[0], data);
+      respondWith(url, data);
     });
 }
