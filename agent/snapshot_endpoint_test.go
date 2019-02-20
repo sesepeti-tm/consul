@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hashicorp/consul/testrpc"
+
 	"github.com/hashicorp/consul/acl"
 )
 
@@ -17,6 +19,7 @@ func TestSnapshot(t *testing.T) {
 	t.Run("", func(t *testing.T) {
 		a := NewTestAgent(t, t.Name(), "")
 		defer a.Shutdown()
+		testrpc.WaitForTestAgent(t, a.RPC, "dc1")
 
 		body := bytes.NewBuffer(nil)
 		req, _ := http.NewRequest("GET", "/v1/snapshot?token=root", body)
@@ -43,6 +46,7 @@ func TestSnapshot(t *testing.T) {
 	t.Run("", func(t *testing.T) {
 		a := NewTestAgent(t, t.Name(), "")
 		defer a.Shutdown()
+		testrpc.WaitForTestAgent(t, a.RPC, "dc1")
 
 		req, _ := http.NewRequest("PUT", "/v1/snapshot?token=root", snap)
 		resp := httptest.NewRecorder()
@@ -58,6 +62,7 @@ func TestSnapshot_Options(t *testing.T) {
 		t.Run(method, func(t *testing.T) {
 			a := NewTestAgent(t, t.Name(), TestACLConfig())
 			defer a.Shutdown()
+			testrpc.WaitForTestAgent(t, a.RPC, "dc1")
 
 			body := bytes.NewBuffer(nil)
 			req, _ := http.NewRequest(method, "/v1/snapshot?token=anonymous", body)
@@ -71,6 +76,7 @@ func TestSnapshot_Options(t *testing.T) {
 		t.Run(method, func(t *testing.T) {
 			a := NewTestAgent(t, t.Name(), TestACLConfig())
 			defer a.Shutdown()
+			testrpc.WaitForTestAgent(t, a.RPC, "dc1")
 
 			body := bytes.NewBuffer(nil)
 			req, _ := http.NewRequest(method, "/v1/snapshot?dc=nope", body)
@@ -84,6 +90,7 @@ func TestSnapshot_Options(t *testing.T) {
 		t.Run(method, func(t *testing.T) {
 			a := NewTestAgent(t, t.Name(), TestACLConfig())
 			defer a.Shutdown()
+			testrpc.WaitForTestAgent(t, a.RPC, "dc1")
 
 			body := bytes.NewBuffer(nil)
 			req, _ := http.NewRequest(method, "/v1/snapshot?token=root&stale", body)
